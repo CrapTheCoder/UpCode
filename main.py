@@ -1,20 +1,12 @@
 import CodeChefScraper
 import CodeForcesScraper
 from time import sleep
-import os
 import logging
 from github import Github
 from UploadToGithub import upload_to_github
-from dotenv import load_dotenv
-
-load_dotenv()
-
-ACCESS_TOKEN = os.environ.get('ACCESS_TOKEN')
-g = Github(ACCESS_TOKEN)
-repo = g.get_user().get_repo('CP-Solutions')
 
 
-def upload_solution(website, solution):
+def upload_solution(website, solution, repo):
     try:
         if 'c++' in solution['language'].lower():
             extension = 'cpp'
@@ -34,18 +26,24 @@ def upload_solution(website, solution):
 
 
 def main():
+    username = input('Enter your username: ')
+    access_token = input('Enter github access token: ')
+
+    g = Github(access_token)
+    repo = g.get_user().get_repo('CP-Solutions')
+
     failed_codeforces = []
-    for solution in CodeForcesScraper.get_solutions('crap_the_coder'):
-        if not upload_solution('CodeForces', solution):
+    for solution in CodeForcesScraper.get_solutions(username):
+        if not upload_solution('CodeForces', solution, repo):
             failed_codeforces.append(solution)
 
     sleep(180)
 
     for solution in failed_codeforces:
-        upload_solution('CodeForces', solution)
+        upload_solution('CodeForces', solution, repo)
 
-    for solution in CodeChefScraper.get_solutions('crap_the_coder'):
-        upload_solution('CodeChef', solution)
+    for solution in CodeChefScraper.get_solutions(username):
+        upload_solution('CodeChef', solution, repo)
 
 
 if __name__ == '__main__':
