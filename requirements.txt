@@ -1,0 +1,4 @@
+PyGithub~=1.55
+grequests~=0.6.0
+requests~=2.27.1
+beautifulsoup4~=4.11.1
