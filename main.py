@@ -26,14 +26,15 @@ def upload_solution(website, solution, repo):
 
 
 def main():
-    username = input('Enter your username: ')
+    codeforces_username = input('Enter codeforces username: ')
+    codechef_username = input('Enter codechef username: ')
     access_token = input('Enter github access token: ')
 
     g = Github(access_token)
     repo = g.get_user().get_repo('CP-Solutions')
 
     failed_codeforces = []
-    for solution in CodeForcesScraper.get_solutions(username):
+    for solution in CodeForcesScraper.get_solutions(codeforces_username):
         if not upload_solution('CodeForces', solution, repo):
             failed_codeforces.append(solution)
 
@@ -42,7 +43,7 @@ def main():
     for solution in failed_codeforces:
         upload_solution('CodeForces', solution, repo)
 
-    for solution in CodeChefScraper.get_solutions(username):
+    for solution in CodeChefScraper.get_solutions(codechef_username):
         upload_solution('CodeChef', solution, repo)
 
 
