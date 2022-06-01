@@ -27,8 +27,8 @@ def upload_solution(website, solution, repo):
 
 
 def main():
-    codeforces_username = input('Enter codeforces username: ')
-    codechef_username = input('Enter codechef username: ')
+    codeforces_username = input('Enter codeforces username (Press enter if N/A): ')
+    codechef_username = input('Enter codechef username (Press enter if N/A): ')
     access_token = input('Enter github access token: ')
 
     g = Github(access_token)
@@ -39,18 +39,20 @@ def main():
     except UnknownObjectException:
         repo = g.get_user().create_repo('CP-Solutions')
 
-    failed_codeforces = []
-    for solution in CodeForcesScraper.get_solutions(codeforces_username):
-        if not upload_solution('CodeForces', solution, repo):
-            failed_codeforces.append(solution)
+    if codeforces_username:
+        failed_codeforces = []
+        for solution in CodeForcesScraper.get_solutions(codeforces_username):
+            if not upload_solution('CodeForces', solution, repo):
+                failed_codeforces.append(solution)
 
-    sleep(180)
+        sleep(180)
 
-    for solution in failed_codeforces:
-        upload_solution('CodeForces', solution, repo)
+        for solution in failed_codeforces:
+            upload_solution('CodeForces', solution, repo)
 
-    for solution in CodeChefScraper.get_solutions(codechef_username):
-        upload_solution('CodeChef', solution, repo)
+    if codechef_username:
+        for solution in CodeChefScraper.get_solutions(codechef_username):
+            upload_solution('CodeChef', solution, repo)
 
 
 if __name__ == '__main__':
