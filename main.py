@@ -39,7 +39,6 @@ def main():
             failed_codeforces.append(solution)
 
     sleep(180)
-
     for solution in failed_codeforces:
         upload_solution('CodeForces', solution, repo)
 
