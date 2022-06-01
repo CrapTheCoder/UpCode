@@ -37,7 +37,7 @@ def main():
         repo = g.get_user().get_repo('CP-Solutions')
 
     except UnknownObjectException:
-        repo = g.get_user().create_repo('CP-Solutions')
+        repo = g.get_user().create_repo('CP-Solutions', private=True)
 
     if codeforces_username:
         failed_codeforces = []
