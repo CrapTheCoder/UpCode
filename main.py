@@ -3,6 +3,7 @@ import CodeForcesScraper
 from time import sleep
 import logging
 from github import Github
+from github.GithubException import UnknownObjectException
 from UploadToGithub import upload_to_github
 
 
@@ -31,7 +32,12 @@ def main():
     access_token = input('Enter github access token: ')
 
     g = Github(access_token)
-    repo = g.get_user().get_repo('CP-Solutions')
+
+    try:
+        repo = g.get_user().get_repo('CP-Solutions')
+
+    except UnknownObjectException:
+        repo = g.get_user().create_repo('CP-Solutions')
 
     failed_codeforces = []
     for solution in CodeForcesScraper.get_solutions(codeforces_username):
@@ -39,6 +45,7 @@ def main():
             failed_codeforces.append(solution)
 
     sleep(180)
+
     for solution in failed_codeforces:
         upload_solution('CodeForces', solution, repo)
 
