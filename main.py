@@ -33,9 +33,16 @@ def codeforces_uploader(codeforces_username, repo):
         if not upload_solution('CodeForces', solution, repo):
             failed_codeforces.append(solution)
 
-    sleep(180)
-    for solution in CodeForcesScraper.get_solutions(codeforces_username, failed_codeforces):
-        upload_solution('CodeForces', solution, repo)
+    for _ in range(3):
+        if failed_codeforces:
+            sleep(180)
+
+            new_failed_codeforces = []
+            for solution in CodeForcesScraper.get_solutions(codeforces_username, failed_codeforces):
+                if not upload_solution('CodeForces', solution, repo):
+                    new_failed_codeforces.append(solution)
+
+            failed_codeforces = new_failed_codeforces
 
 
 def codechef_uploader(codechef_username, repo):

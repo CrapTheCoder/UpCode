@@ -13,13 +13,17 @@ def get_submission_info(username):
 
     for submission in submissions:
         if submission['verdict'] == 'OK':
-            if len(str(submission["problem"]["contestId"])) <= 4:
-                yield {
-                    'language': submission['programmingLanguage'],
-                    'problem_code': f'{submission["problem"]["contestId"]}{submission["problem"]["index"]}',
-                    'solution_id': submission['id'],
-                    'link': f'https://codeforces.com/contest/{submission["contestId"]}/submission/{submission["id"]}?f0a28=2',
-                }
+            try:
+                if len(str(submission["problem"]["contestId"])) <= 4 and len(submission["author"]["members"]) == 1:
+                    yield {
+                        'language': submission['programmingLanguage'],
+                        'problem_code': f'{submission["problem"]["contestId"]}{submission["problem"]["index"]}',
+                        'solution_id': submission['id'],
+                        'link': f'https://codeforces.com/contest/{submission["contestId"]}/submission/{submission["id"]}?f0a28=2',
+                    }
+
+            except KeyError:
+                pass
 
 
 def get_code(html):
