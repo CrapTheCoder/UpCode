@@ -1,3 +1,4 @@
+import grequests
 import requests
 import json
 from time import sleep
@@ -20,6 +21,8 @@ def get_submission_info(username):
                         'language': submission['programmingLanguage'],
                         'problem_code': f'{submission["problem"]["contestId"]}{submission["problem"]["index"]}',
                         'solution_id': submission['id'],
+                        'problem_name': submission['problem']['name'] if 'name' in submission['problem'] else '',
+                        'problem_link': f'https://codeforces.com/contest/{submission["problem"]["contestId"]}/problem/{submission["problem"]["index"]}',
                         'link': f'https://codeforces.com/contest/{submission["contestId"]}/submission/{submission["id"]}?f0a28=2',
                     }
 
@@ -40,12 +43,15 @@ def get_solutions(username, all_info=None):
     if all_info is None:
         all_info = list(get_submission_info(username))
 
-    for info in all_info:
-        session = requests.Session()
+    responses = grequests.imap(grequests.get(info['link'], headers=headers) for info in all_info)
+    for info, response in zip(all_info, responses):
+        code = get_code(response.text)
         yield {
             'language': info['language'],
             'problem_code': info['problem_code'],
             'solution_id': info['solution_id'],
+            'problem_name': info['problem_name'],
+            'problem_link': info['problem_link'],
             'link': info['link'],
-            'solution': get_code(session.get(info['link'], headers=headers).text),
+            'solution': code,
         }

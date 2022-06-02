@@ -31,6 +31,8 @@ def get_info(html):
                 'language': loaded['data']['languageName'],
                 'problem_code': loaded['data']['problemCode'],
                 'solution_id': loaded['data']['solutionId'],
+                'problem_link': f'https://www.codechef.com/{loaded["data"]["contestCode"]}/problems/{loaded["data"]["problemCode"]}',
+                'link': f'https://www.codechef.com/viewsolution/{loaded["data"]["solutionId"]}',
                 'solution': loaded['data']['plaintext'],
             }
 
@@ -44,3 +46,8 @@ def get_solutions(username):
 
     for response in submission_responses:
         yield get_info(response.text)
+
+
+if __name__ == '__main__':
+    for i in get_solutions('crap_the_coder'):
+        break

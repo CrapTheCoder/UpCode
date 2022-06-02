@@ -25,6 +25,7 @@ def get_submission_info(username):
                         'language': submission['language'],
                         'problem_code': submission['problem_id'],
                         'solution_id': submission['id'],
+                        'problem_link': f'https://atcoder.jp/contests/{submission["contest_id"]}/tasks/{submission["problem_id"]}',
                         'link': f'https://atcoder.jp/contests/{submission["contest_id"]}/submissions/{submission["id"]}',
                     }
 
@@ -34,9 +35,10 @@ def get_submission_info(username):
             cur = submission['epoch_second'] + 1
 
 
-def get_code(html):
+def get_name_code(html):
     soup = BeautifulSoup(html, 'lxml')
-    return soup.select_one('#submission-code').text
+    return {'name': '',
+            'code': soup.select_one('#submission-code').text}
 
 
 def get_solutions(username, all_info=None):
@@ -45,10 +47,13 @@ def get_solutions(username, all_info=None):
 
     responses = grequests.imap(grequests.get(info['link'], headers=headers) for info in all_info)
     for response, info in zip(responses, all_info):
+        name_code = get_name_code(response.text)
         yield {
             'language': info['language'],
             'problem_code': info['problem_code'],
             'solution_id': info['solution_id'],
+            'problem_name': name_code['name'],
+            'problem_link': info['problem_link'],
             'link': info['link'],
-            'solution': get_code(response.text),
+            'solution': name_code['code'],
         }
