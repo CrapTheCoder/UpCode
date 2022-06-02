@@ -5,6 +5,7 @@ import logging
 from github import Github
 from github.GithubException import UnknownObjectException
 from UploadToGithub import upload_to_github
+from multiprocessing import Process
 
 
 def upload_solution(website, solution, repo):
@@ -26,6 +27,22 @@ def upload_solution(website, solution, repo):
         return False
 
 
+def codeforces_uploader(codeforces_username, repo):
+    failed_codeforces = []
+    for solution in CodeForcesScraper.get_solutions(codeforces_username):
+        if not upload_solution('CodeForces', solution, repo):
+            failed_codeforces.append(solution)
+
+    sleep(180)
+    for solution in CodeForcesScraper.get_solutions(codeforces_username, failed_codeforces):
+        upload_solution('CodeForces', solution, repo)
+
+
+def codechef_uploader(codechef_username, repo):
+    for solution in CodeChefScraper.get_solutions(codechef_username):
+        upload_solution('CodeChef', solution, repo)
+
+
 def main():
     codeforces_username = input('Enter codeforces username (Press enter if N/A): ')
     codechef_username = input('Enter codechef username (Press enter if N/A): ')
@@ -40,18 +57,12 @@ def main():
         repo = g.get_user().create_repo('CP-Solutions', private=True)
 
     if codeforces_username:
-        failed_codeforces = []
-        for solution in CodeForcesScraper.get_solutions(codeforces_username):
-            if not upload_solution('CodeForces', solution, repo):
-                failed_codeforces.append(solution)
-
-        sleep(180)
-        for solution in CodeForcesScraper.get_solutions(codeforces_username, failed_codeforces):
-            upload_solution('CodeForces', solution, repo)
+        codeforces_process = Process(target=codeforces_uploader, args=(codeforces_username, repo))
+        codeforces_process.start()
 
     if codechef_username:
-        for solution in CodeChefScraper.get_solutions(codechef_username):
-            upload_solution('CodeChef', solution, repo)
+        codechef_process = Process(target=codechef_uploader, args=(codechef_username, repo))
+        codechef_process.start()
 
 
 if __name__ == '__main__':
