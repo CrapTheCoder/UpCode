@@ -10,7 +10,7 @@ from multiprocessing import Process
 
 def upload_solution(website, solution, repo):
     try:
-        s = solution["language"]
+        s = solution["language"].tolower()
         ind = s.rfind(".")
         if ind == -1:
             extension = "txt"
