@@ -10,12 +10,35 @@ from multiprocessing import Process
 
 def upload_solution(website, solution, repo):
     try:
-        if 'c++' in solution['language'].lower():
+        s = solution["language"].lower();
+        if ('c++' in s):
             extension = 'cpp'
-        elif 'py' in solution['language'].lower():
+        elif ('py' in s):
             extension = 'py'
-        elif 'java' in solution['language'].lower():
+        elif ('java' in s):
             extension = 'java'
+        elif ('c#' in s):
+            extension = "cs"
+        elif ('go' in s):
+            extension = "go"
+        elif ("haskell" in s):
+            extension = "hs"
+        elif ("kotlin" in s):
+            extension = "kt"
+        elif ("delphi" in s):
+            extension = "dpr"
+        elif ("pascal" in s):
+            extension = "pas"
+        elif ("perl" in s):
+            extension = "pl"
+        elif ("php" in s):
+            extension = "php"
+        elif ("rust" in s):
+            extension = "rs"
+        elif ("scala" in s):
+            extension = "sc"
+        elif (("javascript" in s) or ("node" in s)):
+            extension = "js"
         else:
             extension = 'txt'
 
