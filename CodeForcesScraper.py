@@ -1,5 +1,6 @@
 import requests
 import json
+from time import sleep
 from bs4 import BeautifulSoup
 
 
@@ -27,13 +28,12 @@ def get_submission_info(username):
 
 
 def get_code(html):
-    for _ in range(2):
-        try:
-            soup = BeautifulSoup(html, 'lxml')
-            return soup.select_one('#program-source-text').text
+    try:
+        soup = BeautifulSoup(html, 'lxml')
+        return soup.select_one('#program-source-text').text
 
-        except:
-            return None
+    except:
+        sleep(60)
 
 
 def get_solutions(username, all_info=None):
