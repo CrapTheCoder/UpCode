@@ -47,7 +47,7 @@ def main():
 
         sleep(180)
 
-        for solution in failed_codeforces:
+        for solution in CodeForcesScraper.get_solutions(codeforces_username, failed_codeforces):
             upload_solution('CodeForces', solution, repo)
 
     if codechef_username:
