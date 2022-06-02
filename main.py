@@ -10,12 +10,37 @@ from multiprocessing import Process
 
 def upload_solution(website, solution, repo):
     try:
-        s = solution["language"].tolower()
-        ind = s.rfind(".")
-        if ind == -1:
-            extension = "txt"
+        s = solution["language"].lower();
+        if ('c++' in s):
+            extension = 'cpp'
+        elif ('py' in s):
+            extension = 'py'
+        elif ('java' in s):
+            extension = 'java'
+        elif ('c#' in s):
+            extension = "cs"
+        elif ('go' in s):
+            extension = "go"
+        elif ("haskell" in s):
+            extension = "hs"
+        elif ("kotlin" in s):
+            extension = "kt"
+        elif ("delphi" in s):
+            extension = "dpr"
+        elif ("pascal" in s):
+            extension = "pas"
+        elif ("perl" in s):
+            extension = "pl"
+        elif ("php" in s):
+            extension = "php"
+        elif ("rust" in s):
+            extension = "rs"
+        elif ("scala" in s):
+            extension = "sc"
+        elif (("javascript" in s) or ("node" in s)):
+            extension = "js"
         else:
-            extension = s[ind + 1:]
+            extension = 'txt'
 
         upload_to_github(repo, f'{website}/{solution["language"]}/{solution["problem_code"]}/{solution["solution_id"]}.{extension}', solution['solution'])
         return True
