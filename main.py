@@ -47,9 +47,9 @@ def main():
     codeforces_username = input('Enter codeforces username (Press enter if N/A): ')
     codechef_username = input('Enter codechef username (Press enter if N/A): ')
     access_token = input('Enter github access token: ')
-    
+
     repo_name = input('Enter repository name (Press enter to use "CP-Solutions"): ')
-    if repo_name.isspace():
+    if repo_name.isspace() or not repo_name:
         repo_name = 'CP-Solutions'
 
     g = Github(access_token)
