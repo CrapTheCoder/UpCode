@@ -13,6 +13,7 @@ EXTENSIONS = {
     'clang': 'cpp',
     'gcc': 'c',
     'py': 'py',
+    'javascript': 'js',
     'java': 'java',
     'c#': 'cs',
     'go': 'go',
@@ -24,7 +25,6 @@ EXTENSIONS = {
     'php': 'php',
     'rust': 'rs',
     'scala': 'sc',
-    'javascript': 'js',
     'node': 'js',
 }
 

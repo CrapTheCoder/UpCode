@@ -52,11 +52,3 @@ def get_solutions(username, all_info=None):
             'link': info['link'],
             'solution': get_code(response.text),
         }
-
-
-if __name__ == '__main__':
-    for d in get_solutions('crap_the_coder'):
-        print(d['solution'])
-        print()
-        print('-' * 100)
-        print()
