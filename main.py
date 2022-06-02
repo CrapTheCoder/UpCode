@@ -11,7 +11,7 @@ from multiprocessing import Process
 def upload_solution(website, solution, repo):
     try:
         s = solution["language"].lower();
-        if ('c++' in s):
+        if (('c++' in s) or ("clang" in s) or ("gcc" in s)):
             extension = 'cpp'
         elif ('py' in s):
             extension = 'py'
