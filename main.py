@@ -47,14 +47,18 @@ def main():
     codeforces_username = input('Enter codeforces username (Press enter if N/A): ')
     codechef_username = input('Enter codechef username (Press enter if N/A): ')
     access_token = input('Enter github access token: ')
+    
+    repo_name = input('Enter repository name (Press enter to use "CP-Solutions"): ')
+    if repo_name.isspace():
+        repo_name = 'CP-Solutions'
 
     g = Github(access_token)
 
     try:
-        repo = g.get_user().get_repo('CP-Solutions')
+        repo = g.get_user().get_repo(repo_name)
 
     except UnknownObjectException:
-        repo = g.get_user().create_repo('CP-Solutions', private=True)
+        repo = g.get_user().create_repo(repo_name, private=True)
 
     if codeforces_username:
         codeforces_process = Process(target=codeforces_uploader, args=(codeforces_username, repo))
