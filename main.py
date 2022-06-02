@@ -1,5 +1,6 @@
 import CodeChefScraper
 import CodeForcesScraper
+import AtcoderScraper
 from time import sleep
 import logging
 from github import Github
@@ -69,9 +70,15 @@ def codechef_uploader(codechef_username, repo):
         upload_solution('CodeChef', solution, repo)
 
 
+def atcoder_uploader(atcoder_username, repo):
+    for solution in AtcoderScraper.get_solutions(atcoder_username):
+        upload_solution('Atcoder', solution, repo)
+
+
 def main():
     codeforces_username = input('Enter codeforces username (Press enter if N/A): ')
     codechef_username = input('Enter codechef username (Press enter if N/A): ')
+    atcoder_username = input('Enter atcoder username (Press enter if N/A): ')
     access_token = input('Enter github access token: ')
 
     repo_name = input('Enter repository name (Press enter to use "CP-Solutions"): ')
@@ -93,6 +100,10 @@ def main():
     if codechef_username:
         codechef_process = Process(target=codechef_uploader, args=(codechef_username, repo))
         codechef_process.start()
+
+    if atcoder_username:
+        atcoder_process = Process(target=atcoder_uploader, args=(atcoder_username, repo))
+        atcoder_process.start()
 
 
 if __name__ == '__main__':
