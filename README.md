@@ -19,4 +19,5 @@ A software for uploading all your accepted solutions from CodeChef and CodeForce
 * BeautifulSoup4 (`bs4`) to parse the html
 * `PyGithub` to access the GitHub API
 * `json` to parse CodeForces API
+* `multiprocessing` to parallelize CodeForces and CodeChef uploads.
 * Misc: `time`, `logging`, `dotenv`
