@@ -46,8 +46,3 @@ def get_solutions(username):
 
     for response in submission_responses:
         yield get_info(response.text)
-
-
-if __name__ == '__main__':
-    for i in get_solutions('crap_the_coder'):
-        break

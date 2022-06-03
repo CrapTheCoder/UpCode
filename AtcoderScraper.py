@@ -1,7 +1,6 @@
 import grequests
 import requests
 import json
-from time import sleep
 from bs4 import BeautifulSoup
 
 
@@ -35,25 +34,23 @@ def get_submission_info(username):
             cur = submission['epoch_second'] + 1
 
 
-def get_name_code(html):
+def get_code(html):
     soup = BeautifulSoup(html, 'lxml')
-    return {'name': '',
-            'code': soup.select_one('#submission-code').text}
+    return soup.select_one('#submission-code').text
 
 
 def get_solutions(username, all_info=None):
     if all_info is None:
-        all_info = list(get_submission_info(username))
+        all_info = list(get_submission_info(username))[::-1]
 
     responses = grequests.imap(grequests.get(info['link'], headers=headers) for info in all_info)
     for response, info in zip(responses, all_info):
-        name_code = get_name_code(response.text)
+        code = get_code(response.text)
         yield {
             'language': info['language'],
             'problem_code': info['problem_code'],
             'solution_id': info['solution_id'],
-            'problem_name': name_code['name'],
             'problem_link': info['problem_link'],
             'link': info['link'],
-            'solution': name_code['code'],
+            'solution': code,
         }
