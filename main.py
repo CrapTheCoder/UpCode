@@ -116,20 +116,20 @@ def main():
     except UnknownObjectException:
         repo = g.get_user().create_repo(repo_name, private=True)
 
-    if codeforces_username:
-        codeforces_uploader(codeforces_username, repo)
-        # codeforces_process = Process(target=codeforces_uploader, args=(codeforces_username, repo))
-        # codeforces_process.start()
+    if atcoder_username:
+        atcoder_uploader(atcoder_username, repo)
+        # atcoder_process = Process(target=atcoder_uploader, args=(atcoder_username, repo))
+        # atcoder_process.start()
 
     if codechef_username:
         codechef_uploader(codechef_username, repo)
         # codechef_process = Process(target=codechef_uploader, args=(codechef_username, repo))
         # codechef_process.start()
 
-    if atcoder_username:
-        atcoder_uploader(atcoder_username, repo)
-        # atcoder_process = Process(target=atcoder_uploader, args=(atcoder_username, repo))
-        # atcoder_process.start()
+    if codeforces_username:
+        codeforces_uploader(codeforces_username, repo)
+        # codeforces_process = Process(target=codeforces_uploader, args=(codeforces_username, repo))
+        # codeforces_process.start()
 
 
 if __name__ == '__main__':
