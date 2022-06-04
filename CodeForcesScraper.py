@@ -46,7 +46,6 @@ def get_solutions(username, all_info=None):
     try:
         if all_info is None:
             all_info = list(get_submission_info(username))
-            print(all_info)
 
     except JSONDecodeError:
         logging.error("CodeForces API is currently unavailable. Please try again later.")
@@ -60,8 +59,6 @@ def get_solutions(username, all_info=None):
     for info in all_info:
         driver.get(info['link'])
         code = get_code(driver)
-
-        print(code)
 
         yield {
             'language': info['language'],
