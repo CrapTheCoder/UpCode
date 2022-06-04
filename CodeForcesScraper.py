@@ -1,10 +1,12 @@
-import grequests
 import requests
 import json
 from json.decoder import JSONDecodeError
 from time import sleep
 import logging
-from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36',
@@ -31,27 +33,36 @@ def get_submission_info(username):
                 pass
 
 
-def get_code(html):
+def get_code(driver):
     try:
-        soup = BeautifulSoup(html, 'lxml')
-        return soup.select_one('#program-source-text').text
+        lines = driver.find_elements(By.CSS_SELECTOR, '#program-source-text > ol > li')
+        return '\n'.join(line.text for line in lines)
 
     except:
-        sleep(60)
+        sleep(100)
 
 
 def get_solutions(username, all_info=None):
     try:
         if all_info is None:
             all_info = list(get_submission_info(username))
+            print(all_info)
 
     except JSONDecodeError:
         logging.error("CodeForces API is currently unavailable. Please try again later.")
         return
 
-    responses = grequests.imap(grequests.get(info['link'], headers=headers) for info in all_info)
-    for info, response in zip(all_info, responses):
-        code = get_code(response.text)
+    options = Options()
+    options.add_argument('--headless')
+
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+
+    for info in all_info:
+        driver.get(info['link'])
+        code = get_code(driver)
+
+        print(code)
+
         yield {
             'language': info['language'],
             'problem_code': info['problem_code'],

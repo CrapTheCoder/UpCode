@@ -3,3 +3,4 @@ grequests~=0.6.0
 requests~=2.27.1
 beautifulsoup4~=4.11.1
 lxml~=4.9.0
+selenium~=4.2.0
