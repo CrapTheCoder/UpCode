@@ -17,7 +17,9 @@ A software for uploading all your accepted solutions from CodeChef, CodeForces, 
 ### Modules used:
 * `requests` and `grequests` to get the html
 * BeautifulSoup4 (`bs4`) to parse the html
+* `selenium` to make CodeForces scraper more reliable
+* `webdriver_manager` to automatically create the chromium executable
 * `PyGithub` to access the GitHub API
 * `json` to parse CodeForces API
-* `multiprocessing` to parallelize CodeForces and CodeChef uploads.
-* Misc: `time`, `logging`, `dotenv`
+* `multiprocessing` to parallelize CodeForces and CodeChef uploads
+* Misc: `time`, `logging`, `dotenv`, `inspect`
