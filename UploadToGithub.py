@@ -14,7 +14,7 @@ def upload_to_github(repo, git_path, content, problem_info=''):
         all_paths = []
 
     if git_path not in all_paths:
-        repo.create_file(git_path, "Committing files", content, branch="main")
+        repo.create_file(git_path, 'Committing files', content, branch="main")
         print(git_path, 'CREATED')
     else:
         print(git_path, 'ALREADY EXISTS')

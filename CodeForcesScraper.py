@@ -10,10 +10,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 logging.getLogger('WDM').setLevel(logging.NOTSET)
 
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36',
-}
-
 
 def get_submission_info(username):
     submissions = json.loads(requests.get(f'https://codeforces.com/api/user.status?handle={username}').text)['result']
