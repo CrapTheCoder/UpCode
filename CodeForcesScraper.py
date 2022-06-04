@@ -8,6 +8,8 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 
+logging.getLogger('WDM').setLevel(logging.NOTSET)
+
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36',
 }
@@ -53,6 +55,7 @@ def get_solutions(username, all_info=None):
 
     options = Options()
     options.add_argument('--headless')
+    options.add_argument('--log-level=3')
 
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 
