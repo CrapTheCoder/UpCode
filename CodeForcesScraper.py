@@ -1,14 +1,21 @@
 import requests
 import json
 from json.decoder import JSONDecodeError
-from time import sleep
 import logging
+from time import sleep
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
+from selenium.common.exceptions import *
 
 logging.getLogger('WDM').setLevel(logging.NOTSET)
+
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36',
+}
 
 
 def get_submission_info(username):
@@ -32,12 +39,8 @@ def get_submission_info(username):
 
 
 def get_code(driver):
-    try:
-        lines = driver.find_elements(By.CSS_SELECTOR, '#program-source-text > ol > li')
-        return '\n'.join(line.text for line in lines)
-
-    except:
-        sleep(100)
+    lines = driver.find_elements(By.CSS_SELECTOR, '#program-source-text > ol > li')
+    return '\n'.join(line.text for line in lines)
 
 
 def get_solutions(username, all_info=None):
@@ -49,22 +52,109 @@ def get_solutions(username, all_info=None):
         logging.error("CodeForces API is currently unavailable. Please try again later.")
         return
 
+    sub_id_info = {info['solution_id']: info for info in all_info}
+    for info in all_info:
+        sub_id_info[info['solution_id']] = info
+
     options = Options()
-    options.add_argument('--headless')
-    options.add_argument('--log-level=3')
+    options.add_argument('--start-maximized')
 
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+    driver.get(f'https://codeforces.com/submissions/{username}')
 
-    for info in all_info:
-        driver.get(info['link'])
-        code = get_code(driver)
+    sleep(1)
 
-        yield {
-            'language': info['language'],
-            'problem_code': info['problem_code'],
-            'solution_id': info['solution_id'],
-            'problem_name': info['problem_name'],
-            'problem_link': info['problem_link'],
-            'link': info['link'],
-            'solution': code,
-        }
+    select = Select(driver.find_element(By.ID, 'verdictName'))
+    select.select_by_value('OK')
+
+    driver.find_element(By.CSS_SELECTOR, '#sidebar > div.roundbox.sidebox.status-filter-box > div:nth-child(5) > form > div:nth-child(4) > input[type=submit]:nth-child(1)').click()
+
+    sub_ids = [info['solution_id'] for info in all_info]
+
+    pages = int(driver.find_elements(By.CSS_SELECTOR, '#pageContent > div > ul > li > span')[-1].text)
+    index = 1
+
+    driver.get(f'https://codeforces.com/submissions/{username}/page/{index}')
+
+    prev = {}
+
+    fail_counter = 0
+
+    failed = []
+    for sub_id in sub_ids:
+        if index > pages:
+            break
+
+        if fail_counter:
+            try:
+                driver.get(sub_id_info[sub_id]['link'])
+
+                code = get_code(driver)
+                sub_id_info[sub_id]['solution'] = code
+                prev[code] = sub_id_info[sub_id]
+                yield sub_id_info[sub_id]
+
+                fail_counter -= 1
+                if fail_counter == 0:
+                    driver.get(f'https://codeforces.com/submissions/{username}/page/{index}')
+
+                sleep(0.3)
+                continue
+
+            except NoSuchElementException:
+                failed.append((sub_id, index))
+                sleep(120)
+
+                driver.quit()
+
+                driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+                driver.get(f'https://codeforces.com/submissions/{username}/page/{index}')
+                fail_counter = 0
+
+        for _ in range(3):
+            try:
+                element = driver.find_element(By.PARTIAL_LINK_TEXT, str(sub_id))
+                driver.execute_script("arguments[0].click();", element)
+                sleep(0.3)
+
+                counter = 0
+
+                cur = []
+                while not cur or ((cur in prev) and ((
+                        sub_id_info[sub_id]['problem_code'] != prev[cur]['problem_code']) or
+                        (sub_id_info[sub_id]['problem_code'][-1].isdigit() and prev[cur]['problem_code'][-1].isdigit()))
+                ):
+                    sleep(0.3)
+                    cur = '\n'.join(ele.text for ele in driver.find_elements(By.CSS_SELECTOR, '#facebox > div > div > div > pre > code > ol > li'))
+
+                    counter += 1
+                    if counter % 3 == 0:
+                        driver.refresh()
+                        driver.execute_script("arguments[0].click();", element)
+
+                        sleep(0.3)
+                        cur = '\n'.join(ele.text for ele in driver.find_elements(By.CSS_SELECTOR, '#facebox > div > div > div > pre > code > ol > li'))
+
+                code = cur
+
+                sub_id_info[sub_id]['solution'] = code.replace('\u00a0', '\n')
+                prev[code] = sub_id_info[sub_id]
+                yield sub_id_info[sub_id]
+
+                break
+
+            except NoSuchElementException:
+                if driver.current_url == 'https://codeforces.com/':
+                    sleep(60)
+
+                else:
+                    index += 1
+                    driver.get(f'https://codeforces.com/submissions/{username}/page/{index}')
+                    break
+
+            except StaleElementReferenceException:
+                driver.execute_script("location.reload(true);")
+                sleep(2)
+
+        else:
+            fail_counter = 5

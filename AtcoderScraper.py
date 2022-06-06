@@ -1,6 +1,7 @@
 import grequests
 import requests
 import json
+from time import sleep
 from bs4 import BeautifulSoup
 
 
@@ -32,6 +33,8 @@ def get_submission_info(username):
                     pass
 
             cur = submission['epoch_second'] + 1
+
+        sleep(1)
 
 
 def get_code(html):
