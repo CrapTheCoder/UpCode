@@ -3,15 +3,15 @@ A software for uploading all your accepted solutions from CodeChef, CodeForces, 
 
 ## How to use:
 * Generate an API key from https://github.com/settings/tokens. Make sure the repo section is checked.
-* Download the project and extract the file. Then open terminal and run the following command:
+* Download the project and extract the zip file. Navigate to the extracted folder and run the following command in terminal:
 
   ```
-  pip install -r C:\path\to\requirements.txt
+  pip install -r requirements.txt
   ```
-* In terminal, run the following command to start using the project:
+* To start using the project, run the following command in terminal:
 
   ```
-  python3 C:\path\to\main.py
+  python3 main.py
   ```
 
 ### Modules used:
