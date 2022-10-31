@@ -22,19 +22,25 @@ def get_submission_links(html):
             soup.select('#content > div > div > div.tablebox-section.l-float > table > tbody > tr > td:nth-child(1)')]
 
 
-def get_info(html):
-    for line in html.split('\n'):
-        if 'meta_info' in line:
-            json_file = line[line.index('{'):].rstrip(';')
-            loaded = json.loads(json_file)
-            return {
-                'language': loaded['data']['languageName'],
-                'problem_code': loaded['data']['problemCode'],
-                'solution_id': loaded['data']['solutionId'],
-                'problem_link': f'https://www.codechef.com/{loaded["data"]["contestCode"]}/problems/{loaded["data"]["problemCode"]}',
-                'link': f'https://www.codechef.com/viewsolution/{loaded["data"]["solutionId"]}',
-                'solution': loaded['data']['plaintext'],
-            }
+def get_info(id):
+    link1 = f'https://www.codechef.com/api/submission-code/{id}'
+    link2 = f'https://www.codechef.com/api/submission-details/{id}'
+    data1 = (requests.get(link1,headers=headers).text)
+    data2 = (requests.get(link2,headers=headers).text)
+    json_data1 = json.loads(data1)
+    json_data2 = json.loads(data2)
+
+    contestCode = json_data2['data']['other_details']['contestCode']
+    problemCode = json_data2['data']['other_details']['problemCode']
+
+    return {
+        'language': json_data1['data']['language']['short_name'],
+        'problem_code': problemCode,
+        'solution_id': id,
+        'problem_link': f'https://www.codechef.com/{contestCode}/problems/{problemCode}',
+        'link': f'https://www.codechef.com/viewsolution/{id}',
+        'solution': json_data1['data']['code'],
+    }
 
 
 def get_solutions(username):
@@ -45,4 +51,7 @@ def get_solutions(username):
     submission_responses = grequests.imap(grequests.get(u, headers=headers) for u in submission_links)
 
     for response in submission_responses:
-        yield get_info(response.text)
+        id = (response.url.split('/')[-1])
+        yield get_info(id)
+        
+
