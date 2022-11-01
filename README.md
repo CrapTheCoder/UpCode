@@ -8,10 +8,15 @@ A software for uploading all your accepted solutions from CodeChef, CodeForces, 
   ```
   pip install -r requirements.txt
   ```
+  or you can try:
+  ```
+  py -m pip install -r requirements.txt
+  ```
+  
 * To start using the project, run the following command in terminal:
 
   ```
-  python3 main.py
+  python main.py
   ```
 
 ### Modules used:
