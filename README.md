@@ -19,7 +19,8 @@ A software for uploading all your accepted solutions from CodeChef, CodeForces, 
   python main.py
   ```
 * After this Put your Codeforces, CodeChef, and Atcoder username along with the GitHub access token (which you already generated at the start of the process)
-  after this give the repository name and you are good to go!, Yaayyy : )
+  after this give the repository name 
+  and you are good to go!, Yaayyy : )
 
 
 ### Modules used:
