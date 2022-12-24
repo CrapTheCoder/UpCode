@@ -73,7 +73,12 @@ def get_solutions(username, all_info=None):
 
     sub_ids = [info['solution_id'] for info in all_info]
 
-    pages = int(driver.find_elements(By.CSS_SELECTOR, '#pageContent > div > ul > li > span')[-1].text)
+    try:
+        pages = int(driver.find_elements(By.CSS_SELECTOR, '#pageContent > div > ul > li > span')[-1].text)
+
+    except IndexError:
+        pages = 1
+
     index = 1
 
     driver.get(f'https://codeforces.com/submissions/{username}/page/{index}')
