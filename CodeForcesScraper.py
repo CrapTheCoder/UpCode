@@ -69,7 +69,7 @@ def get_solutions(username, all_info=None):
     select = Select(driver.find_element(By.ID, 'verdictName'))
     select.select_by_value('OK')
 
-    driver.find_element(By.CSS_SELECTOR, '#sidebar > div.roundbox.sidebox.status-filter-box > div:nth-child(5) > form > div:nth-child(4) > input[type=submit]:nth-child(1)').click()
+    driver.find_element(By.CSS_SELECTOR, 'input[value=Apply]').click()
 
     sub_ids = [info['solution_id'] for info in all_info]
 

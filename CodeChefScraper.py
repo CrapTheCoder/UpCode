@@ -22,23 +22,23 @@ def get_submission_links(html):
             soup.select('#content > div > div > div.tablebox-section.l-float > table > tbody > tr > td:nth-child(1)')]
 
 
-def get_info(id):
-    link1 = f'https://www.codechef.com/api/submission-code/{id}'
-    link2 = f'https://www.codechef.com/api/submission-details/{id}'
-    data1 = (requests.get(link1,headers=headers).text)
-    data2 = (requests.get(link2,headers=headers).text)
+def get_info(solution_id):
+    link1 = f'https://www.codechef.com/api/submission-code/{solution_id}'
+    link2 = f'https://www.codechef.com/api/submission-details/{solution_id}'
+    data1 = requests.get(link1, headers=headers).text
+    data2 = requests.get(link2, headers=headers).text
     json_data1 = json.loads(data1)
     json_data2 = json.loads(data2)
 
-    contestCode = json_data2['data']['other_details']['contestCode']
-    problemCode = json_data2['data']['other_details']['problemCode']
+    contest_code = json_data2['data']['other_details']['contestCode']
+    problem_code = json_data2['data']['other_details']['problemCode']
 
     return {
         'language': json_data1['data']['language']['short_name'],
-        'problem_code': problemCode,
-        'solution_id': id,
-        'problem_link': f'https://www.codechef.com/{contestCode}/problems/{problemCode}',
-        'link': f'https://www.codechef.com/viewsolution/{id}',
+        'problem_code': problem_code,
+        'solution_id': solution_id,
+        'problem_link': f'https://www.codechef.com/{contest_code}/problems/{problem_code}',
+        'link': f'https://www.codechef.com/viewsolution/{solution_id}',
         'solution': json_data1['data']['code'],
     }
 
@@ -51,7 +51,5 @@ def get_solutions(username):
     submission_responses = grequests.imap(grequests.get(u, headers=headers) for u in submission_links)
 
     for response in submission_responses:
-        id = (response.url.split('/')[-1])
-        yield get_info(id)
-        
-
+        solution_id = (response.url.split('/')[-1])
+        yield get_info(solution_id)
